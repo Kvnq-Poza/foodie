@@ -4,6 +4,8 @@ import AuthContext from '../context/AuthContext';
 
 const Navbar = () => {
     let {user, logoutUser} = useContext(AuthContext)
+    const personalizedDashboardURL = `/dashboard/${user.username}`;
+
     return ( 
         <nav className="navbar">
             <h1>Foodie</h1>
@@ -11,14 +13,14 @@ const Navbar = () => {
                 <Link to="/">Home</Link>
                 <Link to="/contact">Contact us</Link>
                 <Link to={"/recipe-share"}>Share-recipe</Link>
-
                 {user ? (
-                    <p onClick={logoutUser}>logout</p>
+                    <>
+                        <Link to={personalizedDashboardURL}>My Dashboard</Link>
+                        <p onClick={logoutUser}>logout</p>
+                    </>
                 ):(
                     <Link to="/login">login</Link>
                 )}
-
-                {user && <p>Hello {user.username}</p>}
             </div>
         </nav>
      );

@@ -343,3 +343,12 @@
   color: red;
   margin-bottom: 10px;
 }
+
+/* Search bar styling */
+.search-input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 200px;
+  margin-bottom: 20px;
+}

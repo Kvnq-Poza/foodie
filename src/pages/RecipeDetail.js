@@ -32,6 +32,7 @@ const RecipeDetail = () => {
             <img src={recipe.image} alt={recipe.title} />
             <p>Ingredients: {recipe.ingredients}</p>
             <p>Instructions: {recipe.instructions}</p>
+            <p>Posted by: {recipe.chef}</p>
           </div>
         )}
       </div>

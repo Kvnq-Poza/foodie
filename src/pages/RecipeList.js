@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 
 const RecipeList = () => {
     let [recipes, setRecipes] = useState([]);
+    let [searchTerm, setSearchTerm] = useState('');
     let [loading, setLoading] = useState(true);
     let [error, setError] = useState(null);
 
@@ -21,15 +22,39 @@ const RecipeList = () => {
             }
         };
         fetchRecipes();
-    }, [])
+    }, []);
+
+    const filteredRecipes = recipes.filter((recipe) => {
+      const recipeTitle = recipe.title.toLowerCase();
+      const recipeIngredients = recipe.ingredients.toLowerCase();
+      const recipeInstructions = recipe.instructions.toLowerCase();
+      const searchQuery = searchTerm.toLowerCase();
+      return (
+        recipeTitle.includes(searchQuery) ||
+        recipeIngredients.includes(searchQuery) ||
+        recipeInstructions.includes(searchQuery)
+      );
+    });
+  
+    const handleSearchChange = (event) => {
+      setSearchTerm(event.target.value);
+    };
+
   return (
 <div className="recipe-list">
       <h2>Recipe List</h2>
+      <input
+            type="text"
+            placeholder="Search recipes"
+            className="search-input"
+            onChange={handleSearchChange}
+            value={searchTerm}
+            />
       {loading && <p>Loading recipes...</p>}
       {error && <p className="error-message">{error}</p>}
       {!loading && !error && (
         <ul className="recipe-items">
-          {recipes.map((recipe) => (
+          {filteredRecipes.map((recipe) => (
             <li key={recipe.id} className="recipe-item">
               <Link to={`/recipes/${recipe.id}`} className="recipe-link">
                 <img

@@ -1,15 +1,14 @@
 import React, {useContext, useEffect, useState} from 'react'
 import AuthContext from '../context/AuthContext'
 import api from '../api';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 
 const Dashboard = () => {
-  const user = useParams()
-  const username = user.username
-  const { authTokens } = useContext(AuthContext);
+  let { authTokens } = useContext(AuthContext);
   let [loading, setLoading] = useState(true);
-  const [userRecipes, setUserRecipes] = useState([]);
+  let [userRecipes, setUserRecipes] = useState([]);
+  let [searchTerm, setSearchTerm] = useState('');
   let [error, setError] = useState(null);
 
   const handleDelete = async (recipeId) => {
@@ -59,14 +58,39 @@ const Dashboard = () => {
       fetchUserRecipes();
     }
   }, [authTokens]);
+
+  const filteredRecipes = userRecipes.filter((recipe) => {
+    const recipeTitle = recipe.title.toLowerCase();
+    const recipeIngredients = recipe.ingredients.toLowerCase();
+    const recipeInstructions = recipe.instructions.toLowerCase();
+    const searchQuery = searchTerm.toLowerCase();
+    return (
+      recipeTitle.includes(searchQuery) ||
+      recipeIngredients.includes(searchQuery) ||
+      recipeInstructions.includes(searchQuery)
+    );
+  });
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+
   return (
     <div>
       <h2>Your Recipes</h2>
+      <input
+            type="text"
+            placeholder="Search your recipes"
+            className="search-input"
+            onChange={handleSearchChange}
+            value={searchTerm}
+            />
       {loading && <p>Loading recipes...</p>}
       {error && <p className="error-message">{error}</p>}
       {!loading && !error && (
         <ul className="recipe-items">
-          {userRecipes.map((recipe) => (
+          {filteredRecipes.map((recipe) => (
             <li key={recipe.id} className="recipe-item">
               <Link to={`/recipes/${recipe.id}`} className="recipe-link">
                 <img
